@@ -69,8 +69,10 @@ if (${AMBER_ENABLE_SPIRV_TOOLS})
   include_directories("${PROJECT_SOURCE_DIR}/third_party/spirv-tools/include")
 endif()
 
-include(src/dawn/find_dawn.cmake)
-include(src/vulkan/find_vulkan.cmake)
+if (NOT ANDROID)
+  include(src/dawn/find_dawn.cmake)
+  include(src/vulkan/find_vulkan.cmake)
+endif()
 
 add_definitions(-DAMBER_ENGINE_VULKAN=$<BOOL:${Vulkan_FOUND}>)
 add_definitions(-DAMBER_ENGINE_DAWN=$<BOOL:${Dawn_FOUND}>)
@@ -178,4 +180,7 @@ endfunction()
 
 add_subdirectory(third_party)
 add_subdirectory(src)
-add_subdirectory(samples)
+
+if (NOT ANDROID)
+  add_subdirectory(samples)
+endif()
