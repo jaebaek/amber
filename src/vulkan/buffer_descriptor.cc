@@ -121,6 +121,8 @@ Result BufferDescriptor::CreateOrResizeIfNeeded(
 
     new_buffer->CopyFromBuffer(command, *buffer_);
 
+    not_destroyed_buffers_.push_back(std::move(buffer_));
+
     buffer_ = std::move(new_buffer);
 
     SetUpdateDescriptorSetNeeded();
@@ -171,6 +173,8 @@ ResourceInfo BufferDescriptor::GetResourceInfo() {
 
 void BufferDescriptor::Shutdown() {
   buffer_->Shutdown();
+  for (auto& buffer : not_destroyed_buffers_)
+    buffer->Shutdown();
 }
 
 }  // namespace vulkan
