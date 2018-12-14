@@ -16,6 +16,8 @@
 #define SRC_VULKAN_PIPELINE_H_
 
 #include <memory>
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "amber/result.h"
@@ -55,6 +57,11 @@ class Pipeline {
                            const uint32_t binding,
                            ResourceInfo* info);
 
+  void SetEntryPointName(VkShaderStageFlagBits stage,
+                         const std::string& entry) {
+    entry_points_[stage] = entry;
+  }
+
   virtual void Shutdown();
   virtual Result ProcessCommands() = 0;
 
@@ -78,6 +85,7 @@ class Pipeline {
     return shader_stage_info_;
   }
 
+  const char* GetEntryPointName(VkShaderStageFlagBits stage) const;
   uint32_t GetFenceTimeout() const { return fence_timeout_ms_; }
 
   VkPipeline pipeline_ = VK_NULL_HANDLE;
@@ -107,6 +115,7 @@ class Pipeline {
   std::vector<VkPipelineShaderStageCreateInfo> shader_stage_info_;
   uint32_t fence_timeout_ms_ = 100;
   bool descriptor_related_objects_already_created_ = false;
+  std::unordered_map<VkShaderStageFlagBits, std::string> entry_points_;
 };
 
 }  // namespace vulkan
