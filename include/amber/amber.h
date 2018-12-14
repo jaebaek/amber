@@ -55,6 +55,11 @@ class Amber {
   /// Parse the given |data| into the |recipe|.
   amber::Result Parse(const std::string& data, amber::Recipe* recipe);
 
+  /// Compile shaders in |recipe| and stores output SPIR-V binaries
+  /// to |shader_map|.
+  amber::Result CompileShaders(const amber::Recipe* recipe,
+                               ShaderMap& shader_map);
+
   /// Executes the given |recipe| with the provided |opts|. Returns a
   /// |Result| which indicates if the execution succeded.
   amber::Result Execute(const amber::Recipe* recipe, const Options& opts);

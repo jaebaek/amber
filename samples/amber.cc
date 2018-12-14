@@ -30,6 +30,7 @@ struct Options {
   std::string buffer_filename;
   int64_t buffer_binding_index = 0;
   bool parse_only = false;
+  bool dump_shaders = false;
   bool show_help = false;
   bool show_version_info = false;
   amber::EngineType engine = amber::EngineType::kVulkan;
@@ -43,6 +44,7 @@ const char kUsage[] = R"(Usage: amber [options] SCRIPT
   -b <filename>  -- Write contents of a UBO or SSBO to <filename>.
   -B <buffer>    -- Index of buffer to write. Defaults buffer 0.
   -e <engine>    -- Specify graphics engine: vulkan, dawn. Default is vulkan.
+  --dump-shaders -- Write shader as SPIR-V binary files.
   -V, --version  -- Output version information for Amber and libraries.
   -h             -- This help text.
 )";
@@ -104,6 +106,8 @@ bool ParseArgs(const std::vector<std::string>& args, Options* opts) {
       opts->show_version_info = true;
     } else if (arg == "-p") {
       opts->parse_only = true;
+    } else if (arg == "--dump-shaders") {
+      opts->dump_shaders = true;
     } else if (arg.size() > 0 && arg[0] == '-') {
       std::cerr << "Unrecognized option " << arg << std::endl;
       return false;
@@ -148,6 +152,26 @@ std::string ReadFile(const std::string& input_file) {
   }
 
   return std::string(data.begin(), data.end());
+}
+
+amber::Result WriteFile(const std::string& output_file,
+                        const void* data,
+                        size_t size_in_bytes) {
+  FILE* file = nullptr;
+#if defined(_MSC_VER)
+  fopen_s(&file, output_file.c_str(), "wb");
+#else
+  file = fopen(output_file.c_str(), "wb");
+#endif
+  if (!file)
+    return amber::Result(std::string("Failed to open ") + output_file);
+
+  size_t bytes_write = fwrite(data, sizeof(char), size_in_bytes, file);
+  fclose(file);
+  if (bytes_write != size_in_bytes)
+    return amber::Result(std::string("Failed to write ") + output_file);
+
+  return {};
 }
 
 }  // namespace
@@ -195,12 +219,34 @@ int main(int argc, const char** argv) {
     return 1;
   }
 
+  amber::ShaderMap shader_map;
+  if (options.dump_shaders) {
+    result = am.CompileShaders(&recipe, shader_map);
+    if (!result.IsSuccess()) {
+      std::cerr << result.Error() << std::endl;
+      return 1;
+    }
+
+    for (const auto& shader : shader_map) {
+      const auto output_filename = options.input_filename + "." + shader.first;
+      result = WriteFile(output_filename, shader.second.data(),
+                         shader.second.size() * sizeof(uint32_t));
+      if (!result.IsSuccess()) {
+        std::cerr << result.Error() << std::endl;
+        return 1;
+      }
+
+      std::cout << "Dump shader: " << output_filename << std::endl;
+    }
+    return 0;
+  }
+
   if (options.parse_only)
     return 0;
 
   amber::Options amber_options;
   amber_options.engine = options.engine;
-  result = am.Execute(&recipe, amber_options);
+  result = am.ExecuteWithShaderData(&recipe, amber_options, shader_map);
   if (!result.IsSuccess()) {
     std::cerr << result.Error() << std::endl;
     return 1;

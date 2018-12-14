@@ -22,6 +22,7 @@
 #include "src/executor.h"
 #include "src/make_unique.h"
 #include "src/parser.h"
+#include "src/shader_compiler.h"
 #include "src/vkscript/parser.h"
 
 namespace amber {
@@ -45,6 +46,31 @@ amber::Result Amber::Parse(const std::string& input, amber::Recipe* recipe) {
     return r;
 
   recipe->SetImpl(parser->GetScript());
+  return {};
+}
+
+amber::Result Amber::CompileShaders(const amber::Recipe* recipe,
+                                    ShaderMap& shader_map) {
+  Script* script = static_cast<Script*>(recipe->GetImpl());
+  if (!script)
+    return Result("Recipe must contain a parsed script");
+
+  for (const auto& shader : script->GetShaders()) {
+    ShaderCompiler sc;
+
+    auto it = shader_map.find(shader->GetName());
+    if (it != shader_map.end())
+      continue;
+
+    Result r;
+    std::vector<uint32_t> data;
+    std::tie(r, data) = sc.Compile(shader.get(), shader_map);
+    if (!r.IsSuccess())
+      return r;
+
+    shader_map[shader->GetName()] = data;
+  }
+
   return {};
 }
 
