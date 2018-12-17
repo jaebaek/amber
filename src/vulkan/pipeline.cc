@@ -69,7 +69,12 @@ void Pipeline::Shutdown() {
   Result r = command_->End();
   if (r.IsSuccess())
     command_->SubmitAndReset(fence_timeout_ms_);
+  command_->Shutdown();
 
+  DestroyVkDescriptorRelatedObjects();
+}
+
+void Pipeline::DestroyVkDescriptorRelatedObjects() {
   for (auto& info : descriptor_set_info_) {
     vkDestroyDescriptorSetLayout(device_, info.layout, nullptr);
     if (info.empty)
@@ -80,8 +85,6 @@ void Pipeline::Shutdown() {
     for (auto& desc : info.descriptors_)
       desc->Shutdown();
   }
-
-  command_->Shutdown();
 
   if (pipeline_layout_ != VK_NULL_HANDLE)
     vkDestroyPipelineLayout(device_, pipeline_layout_, nullptr);
@@ -247,6 +250,11 @@ Result Pipeline::AddDescriptor(const BufferCommand* buffer_command) {
     }
   }
 
+  if (descriptor_set_info_[desc_set].empty &&
+      descriptor_related_objects_already_created_) {
+    DestroyVkDescriptorRelatedObjects();
+    descriptor_related_objects_already_created_ = false;
+  }
   descriptor_set_info_[desc_set].empty = false;
 
   auto& descriptors = descriptor_set_info_[desc_set].descriptors_;
