@@ -116,7 +116,10 @@ class Pipeline {
   std::vector<VkPipelineShaderStageCreateInfo> shader_stage_info_;
   uint32_t fence_timeout_ms_ = 100;
   bool descriptor_related_objects_already_created_ = false;
-  std::unordered_map<VkShaderStageFlagBits, std::string, CastHash<VkShaderStageFlagBits>> entry_points_;
+  std::unordered_map<VkShaderStageFlagBits,
+                     std::string,
+                     CastHash<VkShaderStageFlagBits>>
+      entry_points_;
 };
 
 }  // namespace vulkan

@@ -82,8 +82,12 @@ void Pipeline::Shutdown() {
   }
 
   command_->Shutdown();
-  vkDestroyPipelineLayout(device_, pipeline_layout_, nullptr);
-  vkDestroyPipeline(device_, pipeline_, nullptr);
+
+  if (pipeline_layout_ != VK_NULL_HANDLE)
+    vkDestroyPipelineLayout(device_, pipeline_layout_, nullptr);
+
+  if (pipeline_ != VK_NULL_HANDLE)
+    vkDestroyPipeline(device_, pipeline_, nullptr);
 }
 
 Result Pipeline::CreateDescriptorSetLayouts() {

@@ -51,8 +51,10 @@ class AmberScriptLoader {
    public:
     FileContent(size_t allocate_size_in_bytes)
         : size_in_bytes(allocate_size_in_bytes) {
-      if (allocate_size_in_bytes)
-        content = new char[allocate_size_in_bytes];
+      if (allocate_size_in_bytes) {
+        content = new char[allocate_size_in_bytes + 1];
+        content[allocate_size_in_bytes] = '\0';
+      }
     }
     ~FileContent() { delete content; }
 

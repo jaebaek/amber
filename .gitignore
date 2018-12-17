@@ -16,3 +16,4 @@ android_sample/app/.externalNativeBuild/
 android_sample/app/build/
 android_sample/build/
 android_sample/local.properties
+android_sample/app/src/main/assets/amber/
