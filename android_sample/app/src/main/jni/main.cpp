@@ -14,6 +14,7 @@
 
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include <exception>
 
 #include "amber/amber.h"
 #include "amber/recipe.h"
@@ -34,26 +35,40 @@ static void amber_main(android_app* app) {
     return;
   }
 
-  const auto& script_info = loader.GetScriptInfo();
+  const auto& script_info = loader.GetScripts();
 
+  uint32_t n_passes = 0;
+  uint32_t n_failures = 0;
   for (const auto& info : script_info) {
     amber::Amber am;
     amber::Recipe recipe;
     amber::Result r = am.Parse(info.script_content, &recipe);
     if (!r.IsSuccess()) {
-      LOGE("%s: fail\n\t%s", info.file_name.c_str(), r.Error().c_str());
+      LOGE("case %s: fail\n\t%s", info.asset_name.c_str(), r.Error().c_str());
+      ++n_failures;
       continue;
     }
 
     amber::Options amber_options;
-    r = am.ExecuteWithShaderData(&recipe, amber_options, info.shader_map);
-    if (!r.IsSuccess()) {
-      LOGE("%s: fail\n\t%s", info.file_name.c_str(), r.Error().c_str());
+    try {
+      r = am.ExecuteWithShaderData(&recipe, amber_options, info.shader_map);
+    } catch (const std::exception& e) {
+      LOGE("case %s: exception\n\t", e.what());
+      ++n_failures;
       continue;
     }
 
-    LOGE("%s: pass", info.file_name.c_str());
+    if (!r.IsSuccess()) {
+      LOGE("case %s: fail\n\t%s", info.asset_name.c_str(), r.Error().c_str());
+      ++n_failures;
+      continue;
+    }
+
+    LOGE("case %s: pass", info.asset_name.c_str());
+    ++n_passes;
   }
+
+  LOGE("summary: %u pass, %u fail", n_passes, n_failures);
 }
 
 // Process the next main command.

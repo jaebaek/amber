@@ -228,7 +228,8 @@ int main(int argc, const char** argv) {
     }
 
     for (const auto& shader : shader_map) {
-      const auto output_filename = options.input_filename + "." + shader.first;
+      const auto output_filename =
+          options.input_filename + "." + shader.first + ".spv";
       result = WriteFile(output_filename, shader.second.data(),
                          shader.second.size() * sizeof(uint32_t));
       if (!result.IsSuccess()) {
