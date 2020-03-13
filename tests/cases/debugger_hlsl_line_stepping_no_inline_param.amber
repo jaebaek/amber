@@ -26,8 +26,7 @@ SHADER vertex vtex_shader SPIRV-ASM
                OpMemoryModel Logical GLSL450
                OpEntryPoint Vertex %main "main" %in_var_POSITION %in_var_COLOR %gl_Position %out_var_COLOR
           %7 = OpString "vs.hlsl"
-               OpSource HLSL 600 %7 "#line 1 \"vs.hlsl\"
-struct VS_OUTPUT {
+               OpSource HLSL 600 %7 "struct VS_OUTPUT {
   float4 pos : SV_POSITION;
   float4 color : COLOR;
 };
@@ -40,8 +39,7 @@ VS_OUTPUT main(float4 pos : POSITION,
   return vout;
 }
 "
-          %8 = OpString "#line 1 \"vs.hlsl\"
-struct VS_OUTPUT {
+          %8 = OpString "struct VS_OUTPUT {
   float4 pos : SV_POSITION;
   float4 color : COLOR;
 };
@@ -114,57 +112,45 @@ VS_OUTPUT main(float4 pos : POSITION,
          %53 = OpExtInst %void %1 DebugLocalVariable %14 %43 %41 8 13 %52 FlagIsLocal
          %44 = OpExtInst %void %1 DebugTypeMember %12 %47 %41 2 3 %43 %uint_0 %uint_128 FlagIsProtected|FlagIsPrivate
          %45 = OpExtInst %void %1 DebugTypeMember %13 %47 %41 3 3 %43 %uint_128 %uint_128 FlagIsProtected|FlagIsPrivate
-               OpLine %7 6 1
        %main = OpFunction %void None %36
          %54 = OpLabel
          %79 = OpExtInst %void %1 DebugScope %52
-               OpLine %7 8 13
          %71 = OpVariable %_ptr_Function_VS_OUTPUT Function
          %65 = OpExtInst %void %1 DebugDeclare %53 %71 %40
          %80 = OpExtInst %void %1 DebugScope %49
          %72 = OpVariable %_ptr_Function_VS_OUTPUT Function
          %81 = OpExtInst %void %1 DebugScope %42
-               OpLine %7 6 23
 %param_var_pos = OpVariable %_ptr_Function_v4float Function
          %62 = OpExtInst %void %1 DebugDeclare %50 %param_var_pos %40
-               OpLine %7 7 23
 %param_var_color = OpVariable %_ptr_Function_v4float Function
          %63 = OpExtInst %void %1 DebugDeclare %51 %param_var_color %40
-               OpLine %7 6 23
          %56 = OpLoad %v4float %in_var_POSITION
                OpStore %param_var_pos %56
-               OpLine %7 7 23
          %57 = OpLoad %v4float %in_var_COLOR
                OpStore %param_var_color %57
          %82 = OpExtInst %void %1 DebugScope %52
-               OpLine %7 9 14
          %73 = OpLoad %v4float %param_var_pos
+               OpLine %7 8 13
                OpLine %7 9 3
          %74 = OpAccessChain %_ptr_Function_v4float %71 %int_0
                OpStore %74 %73
-               OpLine %7 10 16
-         %75 = OpLoad %v4float %param_var_color
                OpLine %7 10 3
+         %75 = OpLoad %v4float %param_var_color
          %76 = OpAccessChain %_ptr_Function_v4float %71 %int_1
                OpStore %76 %75
-               OpLine %7 11 10
+               OpLine %7 11 3
          %77 = OpLoad %VS_OUTPUT %71
          %83 = OpExtInst %void %1 DebugScope %49
                OpStore %72 %77
          %58 = OpLoad %VS_OUTPUT %72
          %84 = OpExtInst %void %1 DebugScope %42
-               OpLine %7 6 11
          %59 = OpCompositeExtract %v4float %58 0
-               OpLine %7 2 16
                OpStore %gl_Position %59
-               OpLine %7 6 11
          %60 = OpCompositeExtract %v4float %58 1
-               OpLine %7 3 18
                OpStore %out_var_COLOR %60
          %85 = OpExtInst %void %1 DebugNoScope
                OpReturn
                OpFunctionEnd
-               OpLine %7 6 1
 END
 
 SHADER fragment frag_shader SPIRV-ASM
@@ -304,7 +290,7 @@ CLEAR pipeline
 
 DEBUG pipeline DRAW_ARRAY AS TRIANGLE_LIST START_IDX 0 COUNT 6
     THREAD VERTEX_INDEX 2
-        EXPECT LOCATION "simple_vs.hlsl" 9 "  VS_OUTPUT vout;"
+        EXPECT LOCATION "vs.hlsl" 8 "  VS_OUTPUT vout;"
         EXPECT LOCAL "pos.x" EQ -1.007874
         EXPECT LOCAL "pos.y" EQ 1.000000
         EXPECT LOCAL "pos.z" EQ 0.000000
@@ -312,17 +298,17 @@ DEBUG pipeline DRAW_ARRAY AS TRIANGLE_LIST START_IDX 0 COUNT 6
         EXPECT LOCAL "color.y" EQ 0.000000
         EXPECT LOCAL "color.z" EQ 0.000000
         STEP_IN
-        EXPECT LOCATION "simple_vs.hlsl" 10 "  vout.pos = pos;"
+        EXPECT LOCATION "vs.hlsl" 9 "  vout.pos = pos;"
         STEP_IN
         EXPECT LOCAL "vout.pos.x" EQ -1.007874
         EXPECT LOCAL "vout.pos.y" EQ 1.000000
         EXPECT LOCAL "vout.pos.z" EQ 0.000000
-        EXPECT LOCATION "simple_vs.hlsl" 11 "  vout.color = color;"
+        EXPECT LOCATION "vs.hlsl" 10 "  vout.color = color;"
         STEP_IN
         EXPECT LOCAL "vout.color.x" EQ 1.000000
         EXPECT LOCAL "vout.color.y" EQ 0.000000
         EXPECT LOCAL "vout.color.z" EQ 0.000000
-        EXPECT LOCATION "simple_vs.hlsl" 12 "  return vout;"
+        EXPECT LOCATION "vs.hlsl" 11 "  return vout;"
         CONTINUE
     END
 END
