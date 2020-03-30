@@ -14,6 +14,7 @@
 
 #include "src/shader_compiler.h"
 
+#include <iostream>
 #include <algorithm>
 #include <cstdlib>
 #include <iterator>
@@ -173,6 +174,16 @@ std::pair<Result, std::vector<uint32_t>> ShaderCompiler::Compile(
     if (!optimizer.Run(results.data(), results.size(), &results))
       return {Result("Optimizations failed: " + spv_errors), {}};
   }
+
+  // Remove comment for the follow lines if you want to dump disassembled code.
+  /*
+  std::string text("");
+  if (!tools.Disassemble(results, &text)) {
+    return {Result("Shader disassembly failed: " + spv_errors), {}};
+  }
+  std::cout << shader->GetName() << " :" << std::endl;
+  std::cout << text << std::endl << std::endl;
+  */
 #endif  // AMBER_ENABLE_SPIRV_TOOLS
 
   return {{}, results};

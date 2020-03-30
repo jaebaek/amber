@@ -63,6 +63,7 @@ const wchar_t* kDxcFlags[] = {
     L"-spirv",               // SPIR-V compilation
     L"-fcgl",                // No SPIR-V Optimization
     L"-enable-16bit-types",  // Enabling 16bit types
+    L"-fspv-debug=rich",     // Enabling debug info generation
 };
 const size_t kDxcFlagsCount = sizeof(kDxcFlags) / sizeof(const wchar_t*);
 
