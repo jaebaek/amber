@@ -292,7 +292,7 @@ class Client {
 
     if (source.sourceReference.has_value()) {
       auto ref = source.sourceReference.value();
-      auto it = sourceCache_.by_ref.find(ref);
+      auto it = sourceCache_.by_ref.find(static_cast<int>(ref));
       if (it != sourceCache_.by_ref.end()) {
         *out = it->second;
         return true;
@@ -945,8 +945,8 @@ class VkDebugger : public Engine::Debugger {
       int lane,
       const std::shared_ptr<const amber::debug::ThreadScript>& script) {
     auto thread =
-        MakeUnique<Thread>(virtual_files_, session_, thread_id, lane, script);
-    auto it = runningThreads_.find(thread_id);
+        MakeUnique<Thread>(virtual_files_, session_, static_cast<int>(thread_id), lane, script);
+    auto it = runningThreads_.find(static_cast<int>(thread_id));
     if (it != runningThreads_.end()) {
       // The debugger has now started working on something else for the given
       // thread id.
@@ -956,7 +956,7 @@ class VkDebugger : public Engine::Debugger {
       error_ += completed_thread->Flush();
       completedThreads_.emplace_back(std::move(completed_thread));
     }
-    runningThreads_[thread_id] = std::move(thread);
+    runningThreads_[static_cast<int>(thread_id)] = std::move(thread);
   }
 
   // OnBreakpointHit is called when a debugger breakpoint is hit (breakpoints
@@ -1023,7 +1023,7 @@ class VkDebugger : public Engine::Debugger {
     Client client(session_, [this](const std::string& err) { OnError(err); });
 
     std::unique_lock<std::mutex> lock(threads_mutex_);
-    auto it = runningThreads_.find(thread_id);
+    auto it = runningThreads_.find(static_cast<int>(thread_id));
     if (it == runningThreads_.end()) {
       OnError("Step event reported for non-running thread " +
               std::to_string(thread_id.operator int64_t()));
