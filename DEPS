@@ -13,7 +13,7 @@ vars = {
   'clspv_revision': '86ce19c0130bd13a70862a50a9aa9676eba6548c',
   'cppdap_revision': '1fd23dda91e01550be1a421de307e6fedb2035a9',
   'cpplint_revision': '26470f9ccb354ff2f6d098f831271a1833701b28',
-  'dxc_revision': '711e5e2969b3809d7f2254ca17a67d862b359097',
+  'dxc_revision': 'f87d4b8ec7f25e244877b25dc223e9ec1f0b6c16',
   'glslang_revision': '3ee5f2f1d3316e228916788b300d786bb574d337',
   'googletest_revision': 'a781fe29bcf73003559a3583167fe3d647518464',
   'json_revision': 'fbec662afab55019654e471b65a846a47a696722',
@@ -40,7 +40,7 @@ deps = {
   'third_party/cpplint': Var('google_git') + '/styleguide.git@' +
       Var('cpplint_revision'),
 
-  'third_party/dxc': Var('microsoft_git') + '/DirectXShaderCompiler.git@' +
+  'third_party/dxc': Var('google_git') + '/DirectXShaderCompiler.git@' +
       Var('dxc_revision'),
 
   'third_party/googletest': Var('google_git') + '/googletest.git@' +
