@@ -3,6 +3,7 @@ use_relative_paths = True
 vars = {
   'google_git':  'https://github.com/google',
   'khronos_git': 'https://github.com/KhronosGroup',
+  'jaebaek_git': 'https://github.com/jaebaek',
   'llvm_git': 'https://github.com/llvm',
   'lvandeve_git':  'https://github.com/lvandeve',
   'microsoft_git': 'https://github.com/Microsoft',
@@ -20,7 +21,7 @@ vars = {
   'lodepng_revision': '7fdcc96a5e5864eee72911c3ca79b1d9f0d12292',
   'shaderc_revision': '813ef3dc0d5e10bfdf836c651099fcb2203c24ae',
   'spirv_headers_revision': '7845730cab6ebbdeb621e7349b7dc1a59c3377be',
-  'spirv_tools_revision': 'a61d07a72763c1eb200de0a2c316703643a0d1d9',
+  'spirv_tools_revision': 'a641139c58bbe9e8cc2b3802bccc374c0cacb06b',
   'swiftshader_revision': 'df17a76102dfabb3f1bd6e51449cece9f77b45e3',
   'vulkan_headers_revision': '320af06cbdd29848e1d7100d9b8e4e517db1dfd5',
   'vulkan_loader_revision': '2b0892e15bd83886476141c1f19801d2968efadf',
@@ -61,7 +62,7 @@ deps = {
   'third_party/spirv-headers': Var('khronos_git') + '/SPIRV-Headers.git@' +
       Var('spirv_headers_revision'),
 
-  'third_party/spirv-tools': Var('khronos_git') + '/SPIRV-Tools.git@' +
+  'third_party/spirv-tools': Var('jaebaek_git') + '/SPIRV-Tools.git@' +
       Var('spirv_tools_revision'),
 
   'third_party/swiftshader': Var('swiftshader_git') + '/SwiftShader.git@' +
