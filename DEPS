@@ -21,7 +21,7 @@ vars = {
   'lodepng_revision': '7fdcc96a5e5864eee72911c3ca79b1d9f0d12292',
   'shaderc_revision': '813ef3dc0d5e10bfdf836c651099fcb2203c24ae',
   'spirv_headers_revision': '7845730cab6ebbdeb621e7349b7dc1a59c3377be',
-  'spirv_tools_revision': 'a641139c58bbe9e8cc2b3802bccc374c0cacb06b',
+  'spirv_tools_revision': 'f7a23df700b0c87261d59a4152473e0ee066d505',
   'swiftshader_revision': 'e1012cfc791ddbc6ce11e319831da7973b9a5b32',
   'vulkan_headers_revision': '320af06cbdd29848e1d7100d9b8e4e517db1dfd5',
   'vulkan_loader_revision': '2b0892e15bd83886476141c1f19801d2968efadf',
